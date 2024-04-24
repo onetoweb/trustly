@@ -1,0 +1,32 @@
+{
+    "name": "onetoweb/trustly",
+    "description": "Trustly API Client",
+    "keywords": [
+        "api",
+        "php",
+        "trustly"
+    ],
+    "type": "library",
+    "homepage": "https://github.com/onetoweb/trustly",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan van 't Ende",
+            "email": "jvantende@onetoweb.nl"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "guzzlehttp/guzzle" : "^6.0 || ^7.0",
+        "ramsey/uuid": ">=3.0",
+        "symfony/http-foundation": ">=4.0"
+    },
+    "require-dev": {
+        "symfony/error-handler": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Onetoweb\\Trustly\\": "src/"
+        }
+    }
+}
