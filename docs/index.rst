@@ -16,9 +16,10 @@ Setup Client
     $privateKey = '/path/to/private.pem';
     $username = '{username}';
     $password = '{password}';
+    $testModus = true;
     
     // setup client
-    $client = new Client($privateKey, $username, $password);
+    $client = new Client($privateKey, $username, $password, $testModus);
     
     // (optional) set default notification url
     $client->setDefaultNotificationUrl('https://example.com/listener.php');
@@ -35,9 +36,10 @@ Setup listener for notifications e.g.: https://example.com/listener.php
     $privateKey = '/path/to/private.pem';
     $username = '{username}';
     $password = '{password}';
+    $testModus = true;
     
     // setup client
-    $client = new Client($privateKey, $username, $password);
+    $client = new Client($privateKey, $username, $password, $testModus);
     
     // listen for notifications
     $client->listen(function($method, $uuid, $data) {
