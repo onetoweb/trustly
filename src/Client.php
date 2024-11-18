@@ -11,7 +11,8 @@ use Onetoweb\Trustly\Exception\{
     VerificationInputException,
     PayloadException,
     PrivateKeyException,
-    RequestException
+    RequestException,
+    AlgorithmException
 };
 
 /**
@@ -60,6 +61,11 @@ class Client
     /**
      * @var string
      */
+    private $signingAlgorithm;
+    
+    /**
+     * @var string
+     */
     private $version;
     
     /**
@@ -68,10 +74,21 @@ class Client
     private $defaultNotificationUrl;
     
     /**
+     * @var string[]
+     */
+    public const ALGORITHM_PREFIX = [
+        OPENSSL_ALGO_SHA1 => '',
+        OPENSSL_ALGO_SHA256 => 'alg=RS256;',
+        OPENSSL_ALGO_SHA384 => 'alg=RS384;',
+        OPENSSL_ALGO_SHA512 => 'alg=RS512;'
+    ];
+    
+    /**
      * @param string $privateKey
      * @param string $username
      * @param string $password
      * @param bool $testModus = true
+     * @param int $signingAlgorithm = OPENSSL_ALGO_SHA256
      * @param string $version = self::VERSION
      * 
      * @throws PrivateKeyException if the private key file does not exist or is not readable
@@ -81,13 +98,20 @@ class Client
         string $username,
         string $password,
         bool $testModus = true,
+        int $signingAlgorithm = OPENSSL_ALGO_SHA256,
         string $version = self::VERSION
     ) {
         $this->privateKey = $privateKey;
         $this->username = $username;
         $this->password = $password;
         $this->testModus = $testModus;
+        $this->signingAlgorithm = $signingAlgorithm;
         $this->version = $version;
+        
+        // check if algorithm is supported
+        if (!isset(self::ALGORITHM_PREFIX[$this->signingAlgorithm])) {
+            throw new AlgorithmException('signing algorithm is not supported');
+        }
         
         // check private key file
         if (!is_readable($this->privateKey)) {
@@ -96,6 +120,14 @@ class Client
         
         // load endpoints
         $this->loadEndpoints();
+    }
+    
+    /**
+     * @return string
+     */
+    private function getAlgorithmPrefix(): string
+    {
+        return self::ALGORITHM_PREFIX[$this->signingAlgorithm];
     }
     
     /**
@@ -198,9 +230,9 @@ class Client
         $merchantPrivateKey = openssl_pkey_get_private(file_get_contents($this->privateKey));
         
         // create signature
-        openssl_sign($plainText, $signature, $merchantPrivateKey);
+        openssl_sign($plainText, $signature, $merchantPrivateKey, $this->signingAlgorithm);
         
-        return base64_encode($signature);
+        return $this->getAlgorithmPrefix().base64_encode($signature);
     }
     
     /**
@@ -259,8 +291,14 @@ class Client
         // build plain text
         $plaintext = $method . $uuid . $this->serializeData($data);
         
+        if(preg_match('/^alg=RS\d{3};/', $signature)) {
+            
+            // remove algorithm prefix from signature
+            $signature = substr($signature, 10);
+        }
+        
         // verify singature
-        $result = openssl_verify($plaintext, base64_decode($signature), $trustlyPublicKey);
+        $result = openssl_verify($plaintext, base64_decode($signature), $trustlyPublicKey, $this->signingAlgorithm);
         
         // check result
         if ($result !== 1) {

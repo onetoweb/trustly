@@ -12,11 +12,14 @@ Setup Client
     
     use Onetoweb\Trustly\Client;
     
-    // param
+    // params
     $privateKey = '/path/to/private.pem';
     $username = '{username}';
     $password = '{password}';
+    
+    // (optional) params
     $testModus = true;
+    $signingAlgorithm = OPENSSL_ALGO_SHA256; // defaults to OPENSSL_ALGO_SHA256 possible values: OPENSSL_ALGO_SHA1, OPENSSL_ALGO_SHA256, OPENSSL_ALGO_SHA384, OPENSSL_ALGO_SHA512
     
     // setup client
     $client = new Client($privateKey, $username, $password, $testModus);
@@ -32,11 +35,14 @@ Setup listener for notifications e.g.: https://example.com/listener.php
     
     use Onetoweb\Trustly\Client;
     
-    // param
+    // params
     $privateKey = '/path/to/private.pem';
     $username = '{username}';
     $password = '{password}';
+    
+    // (optional) params
     $testModus = true;
+    $signingAlgorithm = OPENSSL_ALGO_SHA256; // defaults to OPENSSL_ALGO_SHA256 possible values: OPENSSL_ALGO_SHA1, OPENSSL_ALGO_SHA256, OPENSSL_ALGO_SHA384, OPENSSL_ALGO_SHA512
     
     // setup client
     $client = new Client($privateKey, $username, $password, $testModus);
