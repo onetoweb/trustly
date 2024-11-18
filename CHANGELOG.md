@@ -9,3 +9,7 @@
 - Added refund endpoint
 - Added account endpoint
 - Added accountLedger endpoint
+
+## [1.1.0] - 2024-11-18
+
+- Added signing algorithm parameter
