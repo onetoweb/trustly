@@ -22,7 +22,7 @@ Setup Client
     $signingAlgorithm = OPENSSL_ALGO_SHA256; // defaults to OPENSSL_ALGO_SHA256 possible values: OPENSSL_ALGO_SHA1, OPENSSL_ALGO_SHA256, OPENSSL_ALGO_SHA384, OPENSSL_ALGO_SHA512
     
     // setup client
-    $client = new Client($privateKey, $username, $password, $testModus);
+    $client = new Client($privateKey, $username, $password, $testModus, $signingAlgorithm);
     
     // (optional) set default notification url
     $client->setDefaultNotificationUrl('https://example.com/listener.php');
@@ -45,7 +45,7 @@ Setup listener for notifications e.g.: https://example.com/listener.php
     $signingAlgorithm = OPENSSL_ALGO_SHA256; // defaults to OPENSSL_ALGO_SHA256 possible values: OPENSSL_ALGO_SHA1, OPENSSL_ALGO_SHA256, OPENSSL_ALGO_SHA384, OPENSSL_ALGO_SHA512
     
     // setup client
-    $client = new Client($privateKey, $username, $password, $testModus);
+    $client = new Client($privateKey, $username, $password, $testModus, $signingAlgorithm);
     
     // listen for notifications
     $client->listen(function($method, $uuid, $data) {
